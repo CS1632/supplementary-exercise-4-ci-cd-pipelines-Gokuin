@@ -1,3 +1,5 @@
+//Code written by Taittinger Gabelhart and Micheal Kharvoski 
+//For CS1632 QA Exercise 2
 package edu.pitt.cs;
 
 import org.junit.Test;
@@ -79,8 +81,8 @@ public class RentACatTest {
 
 	@Test
 	public void testGetCatNullNumCats0() {
-		// TODO
-		assertNull("calling getCat(2) and seeing if return value is null", r.getCat(2));
+		Cat c = r.getCat(2);
+		assertNull("calling getCat(2) and seeing if return value is null", c);
 	}
 
 	/**
@@ -118,7 +120,7 @@ public class RentACatTest {
 
 	@Test
 	public void testCatAvailableFalseNumCats0() {
-		assertFalse("called catAvailable without r having any cats, should be fasle", r.catAvailable(2));
+		assertFalse("called catAvailable without r having any cats, should be false", r.catAvailable(2));
 	}
 
 	/**
@@ -136,6 +138,8 @@ public class RentACatTest {
 	@Test
 	public void testCatAvailableTrueNumCats3() {
 		// TODO
+		Mockito.when(c2.getRented()).thenReturn(false);
+
 		r.addCat(c1);
 		r.addCat(c2);
 		r.addCat(c3);
@@ -158,13 +162,18 @@ public class RentACatTest {
 
 	@Test
 	public void testCatAvailableFalseNumCats3() {
+		/*this function is failing when its ran on RentACatBuggy
+			Failure Message: testRentCatFailureNumCats3(RentACatTestSolution): 3 cats and cat is rented out but rentCat(2) returns true*/
+		Mockito.when(c2.getRented()).thenReturn(true);
 		r.addCat(c1);//cat 1, id 1
 		r.addCat(c2);//cat 2, id 2
 		r.addCat(c3);//cat 3, id 3
 		r.rentCat(2);// cat 2 should now be rented
+
+
 		// need to mock the behavior for it to be rented
 		// currently the behavior is not there
-		Mockito.when(r.catAvailable(2)).thenReturn(false);
+
 		assertFalse("c2 rented, c1 and c3 not rented, ret value should be false", r.catAvailable(2));
 	}
 
@@ -271,18 +280,21 @@ public class RentACatTest {
 
 	@Test
 	public void testRentCatFailureNumCats3() {
+		//this function is failing when its ran on RentACatBuggy
+		/*RentACatTest passed but RentACatTestSolution failed.  Failure details:
+			testRentCatFailureNumCats3(RentACatTestSolution): 3 cats and cat 2 is rented but rentCat(2) returns true */
+
+		Mockito.when(c2.getRented()).thenReturn(true);
 		r.addCat(c1);//cat 1, id 1
 		r.addCat(c2);//cat 2, id 2
 		r.addCat(c3);//cat 3, id 3
-		Mockito.when(r.rentCat(2)).thenReturn(false);
-		assertFalse("c1, c2 and c3 not rented, call catExists, ret value should be true", r.rentCat(2));
-		// Mockito.verify(r.rentCat(1), times(1));
-		// Mockito.verify(r.rentCat(2), times(0));
-		// Mockito.verify(r.rentCat(3), times(0));
+		r.rentCat(2);
+		
+		assertFalse("c1, c3, c2 added, c3 rented  ret value should be false when trying to rent a second time", r.rentCat(2));
 
-		Mockito.verify(r, times(1)).rentCat(1);
-		Mockito.verify(r, never()).rentCat(2);
-		Mockito.verify(r, never()).rentCat(3);
+		Mockito.verify(c1, never()).rentCat();
+		Mockito.verify(c2, never()).rentCat();
+		Mockito.verify(c3, never()).rentCat();
 	}
 
 	/**
@@ -321,17 +333,31 @@ public class RentACatTest {
 
 	@Test
 	public void testReturnCatNumCats3() {
-		// TODO
+		//this function is failing when its ran on RentACatBuggy
+		/*RentACatTest passed but RentACatTestSolution failed.  Failure details:
+			testReturnCatNumCats3(RentACatTestSolution): 
+			Wanted but not invoked:
+			cat.returnCat();
+			-> at RentACatTestSolution.testReturnCatNumCats3(RentACatTestSolution.java:278)
+
+			However, there were other interactions with this mock:
+			cat.getId();
+			-> at RentACatBuggy.getCat(RentACatBuggy.java:143)
+
+			cat.getRented();
+			-> at RentACatBuggy.returnCat(RentACatBuggy.java:21) */
+
+		Mockito.when(c2.getRented()).thenReturn(true);
 		r.addCat(c1);//cat 1, id 1
 		r.addCat(c2);//cat 2, id 2
 		r.addCat(c3);//cat 3, id 3
 		r.rentCat(2);
 
-		Mockito.when(r.returnCat(2)).thenReturn(true);
 		assertTrue(r.returnCat(2));
 
-		Mockito.verify(r, times(1)).returnCat(2);
-		Mockito.verify(r, never()).returnCat(1);
-		Mockito.verify(r, never()).returnCat(3);
+		//make sure that c2's returnCat() funciton is only called once
+		Mockito.verify(c2, times(1)).returnCat();
+		Mockito.verify(c1, never()).returnCat();
+		Mockito.verify(c3, never()).returnCat();
 	}
 }

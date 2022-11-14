@@ -18,13 +18,12 @@ public class RentACatBuggy implements RentACat {
 	 */
 
 	public boolean returnCat(int id) {
-		// TODO
 		Cat c = getCat(id);
 		if (c != null && !c.getRented()) {
 			c.returnCat();
 			return true;
 		}
-		return true;
+		return false;
 	}
 
 	/**
@@ -38,13 +37,12 @@ public class RentACatBuggy implements RentACat {
 	 */
 
 	public boolean rentCat(int id) {
-		// TODO
 		Cat c = getCat(id);
 		if (c != null && c.getRented()) {
 			c.rentCat();
 			return true;
 		}
-		return true;
+		return false;
 	}
 
 	/**
@@ -58,7 +56,6 @@ public class RentACatBuggy implements RentACat {
 	 */
 
 	public String listCats() {
-		// TODO
 		String ret = "";
 		// null / zero-element check
 		if (cats == null || cats.size() == 0) {
@@ -69,7 +66,7 @@ public class RentACatBuggy implements RentACat {
 		for (Cat c : cats) {
 			if (!c.getRented()) {
 				ret += c.toString();
-				ret += "\t";
+				ret += "\n";
 			}
 		}
 		// If we get all the way through the list and did
@@ -89,7 +86,7 @@ public class RentACatBuggy implements RentACat {
 
 	public boolean catExists(int id) {
 		// TODO
-		return getCat(id) == null;
+		return getCat(id) != null;
 	}
 
 	/**
