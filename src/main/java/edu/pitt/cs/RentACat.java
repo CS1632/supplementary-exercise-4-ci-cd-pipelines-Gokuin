@@ -9,7 +9,7 @@ public interface RentACat {
 			return new RentACatImpl();
 		}
 	}
-	
+
 	public boolean returnCat(int id);
 	public boolean rentCat(int id);
 	public String listCats();
