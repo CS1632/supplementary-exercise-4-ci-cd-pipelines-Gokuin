@@ -60,7 +60,12 @@ jobs:
       contents: read
 
     steps:
-      
+    - name: Restore cached build
+      uses: actions/cache@v3
+      with:
+       key: cached-build-${{github.sha}}
+       path: .
+       
     # https://github.com/marketplace/actions/maven-dependency-tree-dependency-submission
     - name: Update dependency graph
       uses: advanced-security/maven-dependency-submission-action@v2
