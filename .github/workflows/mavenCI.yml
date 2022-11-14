@@ -18,7 +18,12 @@ jobs:
 
     permissions:
       contents: read
+      
+  update_dependence_graph:
 
+    needs: [maven_test]  # Enforces that maven_test runs first
+
+    runs-on: ubuntu-latest
     steps:
 
     # The uses: keyword invokes a GitHub action:
